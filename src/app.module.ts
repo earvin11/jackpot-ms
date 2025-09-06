@@ -1,7 +1,7 @@
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { envs } from 'config/envs';
+import { envs } from 'src/config/envs';
 
 @Module({
   imports: [

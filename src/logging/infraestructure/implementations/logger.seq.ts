@@ -6,7 +6,7 @@ import {
   OnModuleInit,
 } from '@nestjs/common';
 import { SEQ_LOGGER_OPTIONS, SeqLoggerModuleOptions } from '../logger-seq.config';
-import { envs } from 'config/envs';
+import { envs } from 'src/config/envs';
 
 
 @Injectable()
