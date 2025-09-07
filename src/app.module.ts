@@ -1,24 +1,20 @@
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { envs } from 'src/config/envs';
-import { RedisRpc } from './shared/services/redis-rpc.service';
-import { AppController } from './app.controller';
+import { JackpotModule } from './jackpot/infraestructure/jackpot.module';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(envs.dbUri, {
-      dbName: envs.dbName,
-    }),
     BullModule.forRoot({
       connection: {
-        host: envs.redisUri,
+        host: envs.redisHost,
         port: envs.redisPort,
         password: envs.redisPassword
       },
     }),
+    JackpotModule,
+    SharedModule,
   ],
-  providers: [RedisRpc],
-  controllers: [AppController]
 })
 export class AppModule {}
