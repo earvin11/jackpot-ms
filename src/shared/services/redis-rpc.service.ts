@@ -25,7 +25,7 @@ export class RedisRpcService {
             password: envs.redisPassword,
         });
 
-        this.redisSub.on('message', (channel, message) => {
+        this.redisSub.on('message', (__, message) => {
             // Extrae data y correlationId
             // En la data vendria la response
             const { correlationId, data } = JSON.parse(message);
