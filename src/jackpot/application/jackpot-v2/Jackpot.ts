@@ -45,7 +45,7 @@ export class Jackpot {
     '34': 34,
     '35': 35,
     '36': 36,
-    '00': 37,
+    '37': 37,
   };
 
   private readonly COLOR_MAP: Map<string, 'red' | 'black'> = new Map();
@@ -177,7 +177,7 @@ export class Jackpot {
   // Apuesta basket (0, 00, 1, 2, 3)
   betBasket(amount: number): void {
     this.addBet(
-      ['0', '00', '1', '2', '3'],
+      ['0', '37', '1', '2', '3'],
       amount,
       this.config.betPrizeMoney.basket,
     );
