@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { BetsTypes } from 'src/shared/enums/bets-types.enum';
 import { RpcChannels } from 'src/shared/enums/rpc-channels.enum';
 import { RedisRpcService } from 'src/shared/services/redis-rpc.service';
-import { Jackpot } from './jackpot-v2/Jackpot';
+import { Jackpot } from './Jackpot';
 import { BetEntity } from 'src/shared/interfaces/bet.interface';
 
 @Injectable()
-export class CalculateJackpotUseCase {
+export class CalculateJackpotUseCaseV2 {
   constructor(private readonly redisRpcService: RedisRpcService) {}
   async run(data: { roundIds: string[] }) {
     const allBets: BetEntity[] = await this.redisRpcService.send(
