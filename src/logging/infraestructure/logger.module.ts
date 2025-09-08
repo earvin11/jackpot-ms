@@ -12,13 +12,13 @@ import { envs } from 'src/config/envs';
       useValue: {
         seqUrl: envs.seqUrl,
         apiKey: envs.seqApiKey || '',
-        application: 'jackpot-ms' ,
+        application: 'jackpot-ms',
         minimumLevel: 'information',
       },
     },
     {
       provide: LoggerPort,
-      useExisting: LoggerSeq
+      useExisting: LoggerSeq,
     },
   ],
   exports: [LoggerPort],

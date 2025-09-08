@@ -5,14 +5,14 @@ import {
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common';
-import { SEQ_LOGGER_OPTIONS, SeqLoggerModuleOptions } from '../logger-seq.config';
+import {
+  SEQ_LOGGER_OPTIONS,
+  SeqLoggerModuleOptions,
+} from '../logger-seq.config';
 import { envs } from 'src/config/envs';
 
-
 @Injectable()
-export class LoggerSeq
-  implements LoggerService, OnModuleInit, OnModuleDestroy
-{
+export class LoggerSeq implements LoggerService, OnModuleInit, OnModuleDestroy {
   private enabled = false;
   private batchedLogs: any[] = [];
   private batchInterval: NodeJS.Timeout | null = null;
@@ -43,7 +43,7 @@ export class LoggerSeq
   //           : {},
   //         timeout: 3000,
   //       });
-   
+
   //       this.enabled = true;
   //       this.startBatchProcessing();
   //       console.log(`Seq logger connected to ${this.options.seqUrl}`);
@@ -59,44 +59,44 @@ export class LoggerSeq
   // }
 
   async onModuleInit() {
-  if (this.options.seqUrl) {
-    try {
-      const headers: Record<string, string> = {};
-      if (this.options.apiKey) {
-        headers['X-Seq-ApiKey'] = this.options.apiKey;
+    if (this.options.seqUrl) {
+      try {
+        const headers: Record<string, string> = {};
+        if (this.options.apiKey) {
+          headers['X-Seq-ApiKey'] = this.options.apiKey;
+        }
+
+        // Configurar un timeout manual ya que fetch no tiene timeout nativo
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+        await fetch(`${this.options.seqUrl}/api`, {
+          method: 'GET',
+          headers,
+          signal: controller.signal, // para manejar el timeout
+        });
+
+        clearTimeout(timeoutId);
+
+        this.enabled = true;
+        this.startBatchProcessing();
+        console.log(`Seq logger connected to ${this.options.seqUrl}`);
+      } catch (error: any) {
+        // Manejar errores de red, timeout, etc.
+        if (error.name === 'AbortError') {
+          console.log(
+            `Seq logger timed out when connecting to ${this.options.seqUrl}. Logs will not be sent to Seq.`,
+          );
+        } else {
+          console.log(
+            `Seq logger could not connect to ${this.options.seqUrl}. Logs will not be sent to Seq. Error: ${error.message}`,
+          );
+        }
       }
-
-      // Configurar un timeout manual ya que fetch no tiene timeout nativo
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000);
-
-      await fetch(`${this.options.seqUrl}/api`, {
-        method: 'GET',
-        headers,
-        signal: controller.signal, // para manejar el timeout
-      });
-
-      clearTimeout(timeoutId);
-
-      this.enabled = true;
-      this.startBatchProcessing();
-      console.log(`Seq logger connected to ${this.options.seqUrl}`);
-    } catch (error: any) {
-      // Manejar errores de red, timeout, etc.
-      if (error.name === 'AbortError') {
-        console.log(
-          `Seq logger timed out when connecting to ${this.options.seqUrl}. Logs will not be sent to Seq.`,
-        );
-      } else {
-        console.log(
-          `Seq logger could not connect to ${this.options.seqUrl}. Logs will not be sent to Seq. Error: ${error.message}`,
-        );
-      }
+    } else {
+      console.log('Seq URL not provided. Seq logging is disabled.');
     }
-  } else {
-    console.log('Seq URL not provided. Seq logging is disabled.');
   }
-}
 
   onModuleDestroy() {
     if (this.batchInterval) {
@@ -117,52 +117,49 @@ export class LoggerSeq
   }
 
   private async flushLogs() {
-  if (!this.enabled || this.batchedLogs.length === 0) return;
+    if (!this.enabled || this.batchedLogs.length === 0) return;
 
-  const logsToSend = [...this.batchedLogs];
-  this.batchedLogs = [];
+    const logsToSend = [...this.batchedLogs];
+    this.batchedLogs = [];
 
-  try {
-    // Convertir los eventos a formato CLEF (newline-separated JSON)
-    const clefEvents = logsToSend
-      .map((event) => JSON.stringify(event))
-      .join('\n');
+    try {
+      // Convertir los eventos a formato CLEF (newline-separated JSON)
+      const clefEvents = logsToSend
+        .map((event) => JSON.stringify(event))
+        .join('\n');
 
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/vnd.serilog.clef',
-    };
-    if (this.options.apiKey) {
-      headers['X-Seq-ApiKey'] = this.options.apiKey;
-    }
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/vnd.serilog.clef',
+      };
+      if (this.options.apiKey) {
+        headers['X-Seq-ApiKey'] = this.options.apiKey;
+      }
 
-    const response = await fetch(`${this.options.seqUrl}/ingest/clef`, {
-      method: 'POST',
-      headers,
-      body: clefEvents,
-    });
+      const response = await fetch(`${this.options.seqUrl}/ingest/clef`, {
+        method: 'POST',
+        headers,
+        body: clefEvents,
+      });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(
-        `Error enviando logs a Seq: ${response.status} ${response.statusText}`,
-        errorText,
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(
+          `Error enviando logs a Seq: ${response.status} ${response.statusText}`,
+          errorText,
+        );
+        return;
+      }
+
+      const responseData = await response.text(); // Seq puede responder con texto o JSON
+      console.log(
+        `Enviados ${logsToSend.length} eventos a Seq. Respuesta:`,
+        response.status,
+        responseData,
       );
-      return;
+    } catch (error: any) {
+      console.error('Error de red enviando logs a Seq:', error.message);
     }
-
-    const responseData = await response.text(); // Seq puede responder con texto o JSON
-    console.log(
-      `Enviados ${logsToSend.length} eventos a Seq. Respuesta:`,
-      response.status,
-      responseData,
-    );
-  } catch (error: any) {
-    console.error(
-      'Error de red enviando logs a Seq:',
-      error.message,
-    );
   }
-}
 
   // private async flushLogs() {
   //   if (!this.enabled || this.batchedLogs.length === 0) return;

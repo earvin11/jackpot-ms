@@ -5,15 +5,14 @@ import { CalculateJackpotUseCase } from '../../application/calculate-jackpot.use
 
 @Processor(QueueName.CALCULATE_JACKPOT)
 export class CalculateJackpotProcessor extends WorkerHost {
+  constructor(
+    private readonly calculateJackpotUseCase: CalculateJackpotUseCase,
+  ) {
+    super();
+  }
 
-    constructor(
-        private readonly calculateJackpotUseCase: CalculateJackpotUseCase
-    ) {
-        super();
-    }
-
-    async process(job: Job, token?: string): Promise<any> {
-        // Llama al servicio de calculo de jackpot
-        return await this.calculateJackpotUseCase.run(job.data)
-    }
+  async process(job: Job, token?: string): Promise<any> {
+    // Llama al servicio de calculo de jackpot
+    return await this.calculateJackpotUseCase.run(job.data);
+  }
 }

@@ -10,7 +10,7 @@ import { SharedModule } from './shared/shared.module';
       connection: {
         host: envs.redisHost,
         port: envs.redisPort,
-        password: envs.redisPassword
+        password: envs.redisPassword,
       },
     }),
     JackpotModule,

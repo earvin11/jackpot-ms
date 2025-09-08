@@ -3,11 +3,11 @@ import { CalculateJackpotUseCase } from '../application/calculate-jackpot.use-ca
 
 @Controller('jackpot')
 export class JackpotController {
-    constructor(
-        private readonly calculateJackpotUseCase: CalculateJackpotUseCase
-    ) {}
-    @Get()
-    async handleGet() {
-        return await this.calculateJackpotUseCase.run({});
-    }
+  constructor(
+    private readonly calculateJackpotUseCase: CalculateJackpotUseCase,
+  ) {}
+  @Get()
+  async handleGet() {
+    return await this.calculateJackpotUseCase.run({});
+  }
 }

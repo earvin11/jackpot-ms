@@ -7,16 +7,11 @@ import { JackpotController } from './jackpot.controller';
 import { SharedModule } from 'src/shared/shared.module';
 
 @Module({
-    imports: [
-        BullModule.registerQueue(
-            { name: QueueName.CALCULATE_JACKPOT }
-        ),
-        SharedModule,
-    ],
-    providers: [
-        CalculateJackpotUseCase,
-        CalculateJackpotProcessor
-    ],
-    controllers: [JackpotController]
+  imports: [
+    BullModule.registerQueue({ name: QueueName.CALCULATE_JACKPOT }),
+    SharedModule,
+  ],
+  providers: [CalculateJackpotUseCase, CalculateJackpotProcessor],
+  controllers: [JackpotController],
 })
 export class JackpotModule {}
