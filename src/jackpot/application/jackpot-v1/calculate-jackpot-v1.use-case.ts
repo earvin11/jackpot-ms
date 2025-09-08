@@ -15,7 +15,7 @@ import {
 } from './interfaces/round-bets';
 import { IBetV1 } from './interfaces/bet';
 import { RoundBets } from './utils/round-bets-utils';
-import { GetJackpotData } from './interfaces/jackpot-promises';
+import { GetJackpotData, JackpotType } from './interfaces/jackpot-promises';
 import { JackpotUtils } from './utils/jackpot-utils';
 
 @Injectable()
@@ -122,8 +122,20 @@ export class CalculateJackpotUseCaseV1 {
       const totalAmount = totalBets.reduce((acc,curr) => acc += curr.totalAmount * curr.currency.usdExchange,0)
 
       const analisis = this.jackpotUtils.returnPercentageByResult(numbers,totalAmount,roulette,betNumbers)
+
+      const { jackpotRandom, numbersOfJackpot } = roulette;
+
+      const jackpots: JackpotType[] = this.jackpotUtils.getJackpots(
+                jackpotRandom,
+                numbersOfJackpot,
+                roulette.jackpotVersion,
+                doubleZero,
+                analisis,
+                roulette,
+                oldJackpots
+            );
       
-      res({totalAmount,analisis})
+      res({totalAmount,analisis,jackpots})
     })
   };
 

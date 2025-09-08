@@ -1,3 +1,5 @@
+import { JACKPOT_VERSIONS } from "./jackpot-promises";
+
 export interface DataFromRoulette {
   roundsIds: string[];
   rounds: RoundEntity[];
@@ -43,7 +45,7 @@ export interface RouletteEntity {
   active: boolean;
   manualDisable: boolean;
   jackpotRandom: boolean;
-  jackpotVersion: string;
+  jackpotVersion: JACKPOT_VERSIONS;
   alertEmails: string[];
   maxRepeatedResults: number;
   multisAllowed: number[];

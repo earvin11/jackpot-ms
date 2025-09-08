@@ -54,3 +54,11 @@ export const totalToPayInitial: TotalToyPayWithMul = {
   totalToPay_500: 0,
   totalToPay_1000: 0,
 };
+
+export enum JACKPOT_VERSIONS {
+  V1,
+  V2,
+  V3,
+  V4,
+  V5,
+};

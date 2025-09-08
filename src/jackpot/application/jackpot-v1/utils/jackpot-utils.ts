@@ -1,13 +1,17 @@
 import { RouletteEntity } from '../interfaces/data-from-roulette';
 import {
   Analysis,
+  JACKPOT_VERSIONS,
+  JackpotType,
   totalToPayInitial,
   TotalToyPayWithMul,
 } from '../interfaces/jackpot-promises';
 import { BET_ENUMS, RoundBetsNumber } from '../interfaces/round-bets';
 
 export class JackpotUtils {
-  constructor() {}
+  constructor(
+    private readonly jackpotHelper: any
+  ) {}
 
   returnPercentageByResult = (
     numbers: RoundBetsNumber[],
@@ -411,5 +415,93 @@ export class JackpotUtils {
       }
     });
     return total;
+  };
+
+  private randomResult = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  };
+  useJackpotRandomTwo = (rouletteAmerican: boolean): JackpotType[] => {
+    const ramdonNumber = this.randomResult(0, rouletteAmerican ? 37 : 36);
+    const jackpots: JackpotType[] = [];
+
+    jackpots.push({ number: ramdonNumber, multiplier: 150 });
+
+    return jackpots;
+  };
+
+  getJackpots = (
+    jackpotRandom: boolean,
+    numbersOfJackpot: number,
+    jackpotVersion: JACKPOT_VERSIONS,
+    doubleZero: boolean,
+    analisis: Analysis[],
+    generalRoulette,
+    oldJackpots: JackpotType[],
+  ) => {
+    let jackpots: JackpotType[] = [];
+
+    // const bankJackpots = this.getJackpotsFromBankV2(
+    //     analisis,
+    //     generalRoulette,
+    //     numbersOfJackpot,
+    //     oldJackpots
+    // );
+    if (
+        // bankJackpots.length > 0 &&
+      jackpotVersion !== JACKPOT_VERSIONS.V3 &&
+      jackpotVersion !== JACKPOT_VERSIONS.V5 &&
+      !jackpotRandom
+    ) {
+      return [{ number: 0, multiplier: 1 }];
+    }
+
+    if (jackpotRandom) {
+      jackpots = this.jackpotHelper.useJackpotRandomTwo(doubleZero);
+    }
+
+    switch (jackpotVersion) {
+      case JACKPOT_VERSIONS.V2: {
+        jackpots = this.jackpotHelper.useJackpotsTwoV2(
+          analisis,
+          generalRoulette,
+          numbersOfJackpot,
+          oldJackpots,
+        );
+
+        break;
+      }
+      case JACKPOT_VERSIONS.V3: {
+        jackpots = this.jackpotHelper.useJackpotsThreeV2(
+          analisis,
+          oldJackpots,
+          1,
+        );
+
+        break;
+      }
+
+      case JACKPOT_VERSIONS.V4: {
+        jackpots = this.jackpotHelper.useJackpotsFourV2(
+          analisis,
+          generalRoulette,
+          numbersOfJackpot,
+          oldJackpots,
+        );
+
+        break;
+      }
+
+      case JACKPOT_VERSIONS.V5: {
+        jackpots = this.jackpotHelper.useJackpotsFourV2(
+          analisis,
+          generalRoulette,
+          numbersOfJackpot,
+          oldJackpots,
+        );
+
+        break;
+      }
+    }
+    return jackpots;
   };
 }
