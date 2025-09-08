@@ -1,10 +1,10 @@
 import { TYPESOLUTION } from './enums/TYPESOLUTION';
-import { IConfigJackpot } from './interfaces/IConfigJackpot';
-import { IJackpotResolve } from './interfaces/IJackpotResolve';
-import { INumberDataBetInfo } from './interfaces/INumberDataBetInfo';
-import { IReport } from './interfaces/IReport';
-import { shuffleArray } from './utils/FisherYates';
-import { generateSecureRandoms } from './utils/SecureRandomGenerator';
+import { ConfigJackpotInterface } from './interfaces/config-jackpot.interface';
+import { JackpotResolveInterface } from './interfaces/jackpot-resolve.interface';
+import { NumberDataBetInfoInterface } from './interfaces/number-data-bet-info.interface';
+import { ReportInterface } from './interfaces/report.interface';
+import { shuffleArray } from './utils/fisher-yates';
+import { generateSecureRandoms } from './utils/secure-random-generator';
 
 export class Jackpot {
   private readonly NUMBER_MAP: Record<string, number> = {
@@ -49,19 +49,19 @@ export class Jackpot {
   };
 
   private readonly COLOR_MAP: Map<string, 'red' | 'black'> = new Map();
-  private config: IConfigJackpot; // Configuración de la ruleta (probabilidades, multiplicadores, etc.)
-  private numbersData: INumberDataBetInfo[]; // Datos de cada número (0-37) con información de apuestas.
+  private config: ConfigJackpotInterface; // Configuración de la ruleta (probabilidades, multiplicadores, etc.)
+  private numbersData: NumberDataBetInfoInterface[]; // Datos de cada número (0-37) con información de apuestas.
   private balanceAvailableForRewards: number; // Saldo disponible para premiar
   private numberOfBets: number; // numero total de apuestas
   private numberOfBetsStraightBet: number; // numero total de apuestas plenas
-  private fragmentNoBets: INumberDataBetInfo[]; // Segmento sin apuestas
-  private fragmentBetsNotStraight: INumberDataBetInfo[]; // Segmento de apuestas que no son plenas
-  private fragmentBetsStraight: INumberDataBetInfo[]; // Segmento de apuestas plenas
+  private fragmentNoBets: NumberDataBetInfoInterface[]; // Segmento sin apuestas
+  private fragmentBetsNotStraight: NumberDataBetInfoInterface[]; // Segmento de apuestas que no son plenas
+  private fragmentBetsStraight: NumberDataBetInfoInterface[]; // Segmento de apuestas plenas
   private stakeAmount: number; // cantidad de saldo en el paño.
-  private report: IReport;
+  private report: ReportInterface;
 
   // constructor
-  constructor(_config: IConfigJackpot) {
+  constructor(_config: ConfigJackpotInterface) {
     this.config = _config; // Configuracion
     this.balanceAvailableForRewards = 0; // Saldo disponible para premiar
     this.numberOfBets = 0; // numero total de apuestas
@@ -244,7 +244,7 @@ export class Jackpot {
   /**
    ** Resolver los jackpots basado en el peso financiero de cada número
    */
-  public resolve(virtualBank: number): IJackpotResolve {
+  public resolve(virtualBank: number): JackpotResolveInterface {
     this.updateSegments(); // Divide por segmentos basado no apostados, peso financiero, apuestas plenas, etc.
     this.balanceAvailableForRewards = virtualBank * 0.055; // n-(n/18) aprox :: (1/18) : 0.055555...
     this.prepareReport(virtualBank);
@@ -289,16 +289,14 @@ export class Jackpot {
   /**
    * * Resolver de forma inmediata si no hay jugadores apostando
    */
-  private solveWithoutBets(): IJackpotResolve {
+  private solveWithoutBets(): JackpotResolveInterface {
     this.report.solution = TYPESOLUTION.NOT_BETS;
-    let result: IJackpotResolve = {
+    let result: JackpotResolveInterface = {
       result: [],
       report: this.report,
     };
-    const idealNumbers: INumberDataBetInfo[] = this.fragmentNoBets.slice(
-      0,
-      this.config.sizeJackpots,
-    );
+    const idealNumbers: NumberDataBetInfoInterface[] =
+      this.fragmentNoBets.slice(0, this.config.sizeJackpots);
     idealNumbers.forEach((n) => {
       result.result.push({
         number: n.number.toString(),
@@ -319,10 +317,11 @@ export class Jackpot {
   /**
    * * Resolver de forma inmediata si hay en el paño solo apuestas NO PLENAS.
    */
-  private solveWithNonStraight(): IJackpotResolve {
+  private solveWithNonStraight(): JackpotResolveInterface {
     this.report.solution = TYPESOLUTION.BETS_NOT_STRAIGHT;
-    let idealNumbers: INumberDataBetInfo[] = this.fragmentBetsNotStraight;
-    let result: IJackpotResolve = {
+    let idealNumbers: NumberDataBetInfoInterface[] =
+      this.fragmentBetsNotStraight;
+    let result: JackpotResolveInterface = {
       result: [],
       report: this.report,
     };
@@ -355,8 +354,8 @@ export class Jackpot {
   /**
    * * Resolver con apuestas plenas, puede dar premios 🫥
    */
-  private solveWithStraightBets(): IJackpotResolve {
-    let result: IJackpotResolve = {
+  private solveWithStraightBets(): JackpotResolveInterface {
+    let result: JackpotResolveInterface = {
       result: [],
       report: this.report,
     };
@@ -426,11 +425,11 @@ export class Jackpot {
     return this.GetResult(result);
   }
 
-  private GetResult(_result: IJackpotResolve): IJackpotResolve {
+  private GetResult(_result: JackpotResolveInterface): JackpotResolveInterface {
     if (_result.result.length > 0) {
       const size: number =
         Math.floor(generateSecureRandoms(1)[0] * this.config.sizeJackpots) + 1;
-      const result: IJackpotResolve = {
+      const result: JackpotResolveInterface = {
         result: _result.result.slice(0, size),
         report: _result.report,
       };

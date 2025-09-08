@@ -1,7 +1,7 @@
-import { IBetsPrizeMoney } from './IBets';
+import { BetsPrizeMoneyInterface } from './bets-prize-money.interface';
 
-export interface IConfigJackpot {
-  betPrizeMoney: IBetsPrizeMoney;
+export interface ConfigJackpotInterface {
+  betPrizeMoney: BetsPrizeMoneyInterface;
   virtualBank_min: number;
   virtualBank_max: number;
   virtualBank_part: number; //x=18 const (n - 1) / n == (x-1)/x === n = n-(17/18) === 1-(17/18) ~= 0.055...

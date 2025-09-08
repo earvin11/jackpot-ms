@@ -1,4 +1,4 @@
-export interface IJackpot {
+export interface JackpotInterface {
   number: string;
   multiply: number;
 }

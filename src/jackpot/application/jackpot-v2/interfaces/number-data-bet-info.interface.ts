@@ -1,4 +1,4 @@
-export interface INumberDataBetInfo {
+export interface NumberDataBetInfoInterface {
   number: number;
   financialWeight: number;
   isStraightBet: boolean;

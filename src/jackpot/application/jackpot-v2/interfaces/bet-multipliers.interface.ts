@@ -1,4 +1,4 @@
-export interface IBetsPrizeMoney {
+export interface BetMultipliersInterface {
   straightUp: number; // Pleno / Straight Up (Ej: 17) → "Número completo"
   split: number; // Split / Split Bet (Ej: 14-17) → "Caballo"
   street: number; // Calle / Street Bet (Ej: 4-5-6) → "Transversal"

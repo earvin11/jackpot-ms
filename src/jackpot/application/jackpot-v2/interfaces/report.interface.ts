@@ -1,6 +1,6 @@
 import { TYPESOLUTION } from '../enums/TYPESOLUTION';
 
-export interface IReport {
+export interface ReportInterface {
   virtualBank: number;
   balanceAvailableForRewards: number;
   fragmentNoBets: number;
