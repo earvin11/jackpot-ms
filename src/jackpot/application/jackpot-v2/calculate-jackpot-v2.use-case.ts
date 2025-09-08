@@ -86,7 +86,8 @@ export class CalculateJackpotUseCaseV2 {
     }
   };
 
-  private breakDownBets = (bets: BetEntity[]) => {
+  // TODO: tipar bets
+  private breakDownBets = (bets: any[]) => {
     const brokenDownBets: {
       value: string | number;
       amount: number;
@@ -103,7 +104,7 @@ export class CalculateJackpotUseCaseV2 {
               case BetsTypes.PLENO: {
                 brokenDownBets.push({
                   value: apuesta.number,
-                  amount: apuesta.amount * apuesta.currency.usdExchange,
+                  amount: apuesta.amount * bet.currency.usdExchange,
                   type: BetsTypes.PLENO,
                 });
                 break;
@@ -111,7 +112,7 @@ export class CalculateJackpotUseCaseV2 {
               case BetsTypes.SEMI_PLENO: {
                 brokenDownBets.push({
                   value: apuesta.number,
-                  amount: apuesta.amount * apuesta.currency.usdExchange,
+                  amount: apuesta.amount * bet.currency.usdExchange,
                   type: BetsTypes.SEMI_PLENO,
                 });
                 break;
@@ -119,7 +120,7 @@ export class CalculateJackpotUseCaseV2 {
               case BetsTypes.CALLE: {
                 brokenDownBets.push({
                   value: apuesta.numbers,
-                  amount: apuesta.amount * apuesta.currency.usdExchange,
+                  amount: apuesta.amount * bet.currency.usdExchange,
                   type: BetsTypes.CALLE,
                 });
                 break;
@@ -127,7 +128,7 @@ export class CalculateJackpotUseCaseV2 {
               case BetsTypes.CUADRO: {
                 brokenDownBets.push({
                   value: apuesta.numbers,
-                  amount: apuesta.amount * apuesta.currency.usdExchange,
+                  amount: apuesta.amount * bet.currency.usdExchange,
                   type: BetsTypes.CUADRO,
                 });
                 break;
@@ -136,7 +137,7 @@ export class CalculateJackpotUseCaseV2 {
               case BetsTypes.LINEA: {
                 brokenDownBets.push({
                   value: apuesta.numbers,
-                  amount: apuesta.amount * apuesta.currency.usdExchange,
+                  amount: apuesta.amount * bet.currency.usdExchange,
                   type: BetsTypes.LINEA,
                 });
                 break;
@@ -145,7 +146,7 @@ export class CalculateJackpotUseCaseV2 {
               case BetsTypes.EVEN_ODD: {
                 brokenDownBets.push({
                   value: apuesta.type === 'EVEN' ? 'even' : 'odd',
-                  amount: apuesta.amount * apuesta.currency.usdExchange,
+                  amount: apuesta.amount * bet.currency.usdExchange,
                   type: BetsTypes.EVEN_ODD,
                 });
                 break;
@@ -154,7 +155,7 @@ export class CalculateJackpotUseCaseV2 {
               case BetsTypes.COLOR: {
                 brokenDownBets.push({
                   value: apuesta.type === 'RED' ? 'red' : 'black',
-                  amount: apuesta.amount * apuesta.currency.usdExchange,
+                  amount: apuesta.amount * bet.currency.usdExchange,
                   type: BetsTypes.COLOR,
                 });
                 break;
@@ -168,7 +169,7 @@ export class CalculateJackpotUseCaseV2 {
                       : apuesta.type === 'SECOND'
                         ? 2
                         : 3,
-                  amount: apuesta.amount * apuesta.currency.usdExchange,
+                  amount: apuesta.amount * bet.currency.usdExchange,
                   type: BetsTypes.COLUMN,
                 });
                 break;
@@ -182,7 +183,7 @@ export class CalculateJackpotUseCaseV2 {
                       : apuesta.type === 'SECOND'
                         ? 2
                         : 3,
-                  amount: apuesta.amount * apuesta.currency.usdExchange,
+                  amount: apuesta.amount * bet.currency.usdExchange,
                   type: BetsTypes.DOZEN,
                 });
                 break;
@@ -191,7 +192,7 @@ export class CalculateJackpotUseCaseV2 {
               case BetsTypes.CHANCE_SIMPLE: {
                 brokenDownBets.push({
                   value: apuesta.type === '1-18' ? 'low' : 'high',
-                  amount: apuesta.amount * apuesta.currency.usdExchange,
+                  amount: apuesta.amount * bet.currency.usdExchange,
                   type: BetsTypes.CHANCE_SIMPLE,
                 });
                 break;
@@ -205,7 +206,7 @@ export class CalculateJackpotUseCaseV2 {
               case BetsTypes.SPECIAL_CALLE: {
                 brokenDownBets.push({
                   value: 1, // no es necesario, pero algo tengo que poner XD
-                  amount: apuesta.amount * apuesta.currency.usdExchange,
+                  amount: apuesta.amount * bet.currency.usdExchange,
                   type: BetsTypes.SPECIAL_CALLE,
                 });
               }
