@@ -356,7 +356,7 @@ export class LoggerSeq implements LoggerService, OnModuleInit, OnModuleDestroy {
   // Logger estándar
   log(message: any, context?: string, data?: any): void {
     this.addLogToBatch('log', this.formatMessage(message), context, data);
-    console.log(`[${context || 'Global'}] ${this.formatMessage(message)}`);
+    console.log(`[Global] ${this.formatMessage(message)}`);
   }
 
   // Errores con stack trace

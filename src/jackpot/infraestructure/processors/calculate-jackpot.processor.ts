@@ -13,7 +13,7 @@ export class CalculateJackpotProcessor extends WorkerHost {
   }
 
   async process(job: Job, token?: string): Promise<any> {
-    // Llama al servicio de calculo de jackpot
+    // Llama al servicio de calculo de jackpot    
     return await this.calculateJackpotUseCaseV2.run(job.data);
   }
 }

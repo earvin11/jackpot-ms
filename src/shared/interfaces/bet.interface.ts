@@ -43,7 +43,7 @@ interface ChanceSimpleBet {
   amount: number;
 }
 interface CubreBet {
-  type: '0-1-2' | '0-37-2' | '37-2-3';
+  type: '0-1-2' | '0-37-2' | '37-2-3' | '0-2-3';
   amount: number;
 }
 

@@ -6,6 +6,8 @@ import { CalculateJackpotProcessor } from './processors/calculate-jackpot.proces
 import { SharedModule } from 'src/shared/shared.module';
 import { CalculateJackpotUseCaseV1 } from '../application/jackpot-v1/calculate-jackpot-v1.use-case';
 import { LoggerModule } from 'src/logging/infraestructure/logger.module';
+import { RoundBets } from '../application/jackpot-v1/utils/round-bets-utils';
+import { JackpotUtils } from '../application/jackpot-v1/utils/jackpot-utils';
 
 @Module({
   imports: [
@@ -13,6 +15,12 @@ import { LoggerModule } from 'src/logging/infraestructure/logger.module';
     SharedModule,
     LoggerModule,
   ],
-  providers: [CalculateJackpotUseCaseV1, CalculateJackpotUseCaseV2, CalculateJackpotProcessor],
+  providers: [
+    CalculateJackpotUseCaseV1, 
+    CalculateJackpotUseCaseV2, 
+    CalculateJackpotProcessor,
+    RoundBets,
+    JackpotUtils
+  ],
 })
 export class JackpotModule {}
