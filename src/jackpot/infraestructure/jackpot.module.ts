@@ -5,12 +5,14 @@ import { CalculateJackpotUseCaseV2 } from '../application/jackpot-v2/calculate-j
 import { CalculateJackpotProcessor } from './processors/calculate-jackpot.processor';
 import { SharedModule } from 'src/shared/shared.module';
 import { CalculateJackpotUseCaseV1 } from '../application/jackpot-v1/calculate-jackpot-v1.use-case';
+import { LoggerModule } from 'src/logging/infraestructure/logger.module';
 
 @Module({
   imports: [
     BullModule.registerQueue({ name: QueueName.CALCULATE_JACKPOT }),
     SharedModule,
+    LoggerModule,
   ],
-  providers: [CalculateJackpotUseCaseV1, CalculateJackpotUseCaseV2,CalculateJackpotProcessor],
+  providers: [CalculateJackpotUseCaseV1, CalculateJackpotUseCaseV2, CalculateJackpotProcessor],
 })
 export class JackpotModule {}
