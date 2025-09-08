@@ -8,6 +8,6 @@ export class JackpotController {
   ) {}
   @Get()
   async handleGet() {
-    return await this.calculateJackpotUseCase.run({});
+    // return await this.calculateJackpotUseCase.run({});
   }
 }

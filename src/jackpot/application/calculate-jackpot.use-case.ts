@@ -8,20 +8,20 @@ import { BetEntity } from 'src/shared/interfaces/bet.interface';
 @Injectable()
 export class CalculateJackpotUseCase {
   constructor(private readonly redisRpcService: RedisRpcService) {}
-  async run(data: { roundsIds: string[] }) {
+  async run(data: { roundIds: string[] }) {
     const allBets: BetEntity[] = await this.redisRpcService.send(
       RpcChannels.GET_ALL_BETS_ROUNDS_IDS,
-      { roundsIds: data.roundsIds },
+      { roundsIds: data.roundIds },
     );
 
     this.calculateJackpot(data, allBets);
   }
 
   public calculateJackpot = async (
-    data: { roundsIds: string[] },
+    data: { roundIds: string[] },
     allBets: BetEntity[],
   ) => {
-    for (let roundId of data.roundsIds) {
+    for (let roundId of data.roundIds) {
       const jackpot = new Jackpot(this.config);
       const bets = allBets.filter(
         (curr) => curr.round.toString() === roundId.toString(),
